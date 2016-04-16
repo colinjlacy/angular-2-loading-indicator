@@ -19,13 +19,15 @@ In your target class, reference the two classes in `loading-indicator.ts`.  One 
 	    directives: [LoadingIndicator]
 	})
 	export class LoginPage extends LoadingPage {
+		public asyncData;
 	
 	    constructor(private _data: DataService) {
 	        super(true); // sets loading to true
 	    }
 	
 	    ngOnInit() {
-	        this._data.getData().then(() => {
+	        this._data.getData().then(res => {
+	            this.asyncData = res;
 	            this.ready(); // sets loading to false
 	        );
 	    }
@@ -36,31 +38,11 @@ In the template where you'll use this class, add an `*ngSwitch` to toggle the ac
 	<ion-content class="login">
 		<div [ngSwitch]="loading">
 			<div *ngSwitchWhen="false">
-				<form>
-					<ion-list>
-						<ion-item clearInput>
-							<ion-label stacked>Email Address</ion-label>
-							<ion-input [(ngModel)]="userEmail"
-							           type="email"
-							           required
-							           ngControl="userEmail"
-							           #emailInput></ion-input>
-						</ion-item>
-	
-						<ion-item clearInput>
-							<ion-label stacked>Password</ion-label>
-							<ion-input [(ngModel)]="password"
-							           type="password"
-							           required
-							           ngControl="password"
-							           #passwordInput></ion-input>
-						</ion-item>
-	
-						<button block (click)="login()" [disabled]="emailInput.invalid || passwordInput.invalid">
-							Sign In
-						</button>
-					</ion-list>
-				</form>
+				<ul>
+					<div *ngFor='#item in asyncData.items'>
+						<li>{{item}}</li>
+					</div>
+				</ul>
 			</div>
 			<div *ngSwitchWhen="true">
 				<loading-indicator></loading-indicator>
@@ -68,6 +50,7 @@ In the template where you'll use this class, add an `*ngSwitch` to toggle the ac
 		</div>
 	</ion-content>
 
+In this case, the `ngSwitch` blocks the `ngFor` repeater from loading into the DOM; had it been loaded, Angular would have thrown an error, as it wouldn't be able to find property `items` of *undefined*.
 
 ### Members
 
