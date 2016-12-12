@@ -10,13 +10,11 @@ In your target class, reference the two classes in `loading-indicator.ts`.  One 
 
 	import {Component, OnInit} from 'angular/core';
 	import {DataService} from '../../data/data.service';
-	import {LoadingIndicator, LoadingPage} from '../../components/loading-indicator';
+	import {LoadingPage} from 'path/to/loading-indicator';
 	
 	@Component({
 		selector: 'some-component',
-	    templateUrl: 'some/page.html',
-	    providers: [DataService],
-	    directives: [LoadingIndicator]
+	    templateUrl: 'some/page.html'
 	})
 	export class LoginPage extends LoadingPage {
 		public asyncData;
@@ -37,14 +35,14 @@ In the template where you'll use this class, add an `*ngSwitch` to toggle the ac
 
 	<ion-content class="login">
 		<div [ngSwitch]="loading">
-			<div *ngSwitchWhen="false">
+			<div *ngSwitchCase="false">
 				<ul>
 					<div *ngFor='#item in asyncData.items'>
 						<li>{{item}}</li>
 					</div>
 				</ul>
 			</div>
-			<div *ngSwitchWhen="true">
+			<div *ngSwitchCase="true">
 				<loading-indicator></loading-indicator>
 			</div>
 		</div>
